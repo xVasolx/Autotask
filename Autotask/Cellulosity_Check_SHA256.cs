@@ -20,40 +20,29 @@ namespace Autotask
 
     internal class Cellulosity_Check_SHA256
     {
-        private DirectoryInfo main_path;
-        public List<string> directorys = new List<string>();
-        public List<string> hash_file = new List<string>();
-        public DirectoryInfo Main_path
-        {
-            get => main_path;
-            set
-            {
-                if (value == null)
-                {
-                    throw new Cellulosity_Check_SHA256_Null_Exception("Папка не укаана, повторите попытку!");
-                }
-                else
-                {
-                    main_path = value;
-                }
-
-            }
-        }
+        private DirectoryInfo path_to_file { get; set; }
+        public string Directory { get; set; }
+        public string Hash_file { get; set; }
+       
 
 
 
-        public static void Hash(List<string> directorys, List<string> hash_file)
+        public static bool Hash(FileInfoDB fileInfoDB)
         {
             SHA256 sha256_hash = SHA256.Create();
+            bool CheckSum = true;
 
+            byte[] bytes = File.ReadAllBytes(fileInfoDB.file_PatchToClient);
+            byte[] hash_byte = sha256_hash.ComputeHash(bytes);
+            string hash = BitConverter.ToString(hash_byte).Replace("-", string.Empty);
 
-            foreach (string file in directorys)
+            if(hash != fileInfoDB.file_CheckSum)
             {
-                byte[] bytes = File.ReadAllBytes(file);
-                byte[] hash_byte = sha256_hash.ComputeHash(bytes);
-                string hash = BitConverter.ToString(hash_byte).Replace("-", string.Empty);
-                hash_file.Add(hash);
+                CheckSum = false;
             }
+
+            return CheckSum;
+            
 
 
         }
