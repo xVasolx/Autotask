@@ -14,9 +14,9 @@ namespace Autotask
         {
             this.jsonFile = jsonFile;
         }
-        public List<FieldsJson> UseUserDefinedObjectWithNewtonsoftJson()
+        public List<ProjectInfoDB> UseUserDefinedObjectWithNewtonsoftJson()
         {
-            List<FieldsJson> fileInfo = JsonConvert.DeserializeObject<List<FieldsJson>>(jsonFile);
+            List<ProjectInfoDB> fileInfo = JsonConvert.DeserializeObject<List<ProjectInfoDB>>(jsonFile);
             return fileInfo;
         }
     }

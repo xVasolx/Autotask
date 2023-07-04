@@ -19,12 +19,17 @@ namespace Autotask
 
         public List<FileInfoDB> UseUserDefinedObjectWithNewtonsoftJson()
         {
-            using (StreamReader reader = new StreamReader(jsonFile))
-            {
-                var json = reader.ReadToEnd();
-                List<FileInfoDB> fileInfo = JsonConvert.DeserializeObject<List<FileInfoDB>>(json);
-                return fileInfo;
-            }
+
+            List<FileInfoDB> fileInfo = JsonConvert.DeserializeObject<List<FileInfoDB>>(jsonFile);
+            return fileInfo;
+
+
+            //using (StreamReader reader = new StreamReader(jsonFile))
+            //{
+            //    var json = reader.ReadToEnd();
+            //    List<FileInfoDB> fileInfo = JsonConvert.DeserializeObject<List<FileInfoDB>>(jsonFile);
+            //    return fileInfo;
+            //}
         }
 
     }

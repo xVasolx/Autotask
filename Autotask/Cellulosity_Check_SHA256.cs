@@ -30,16 +30,23 @@ namespace Autotask
         public static bool Hash(FileInfoDB fileInfoDB)
         {
             SHA256 sha256_hash = SHA256.Create();
-            bool CheckSum = true;
-
-            byte[] bytes = File.ReadAllBytes(fileInfoDB.file_PatchToClient);
-            byte[] hash_byte = sha256_hash.ComputeHash(bytes);
-            string hash = BitConverter.ToString(hash_byte).Replace("-", string.Empty);
-
-            if(hash != fileInfoDB.file_CheckSum)
+            bool CheckSum = false;
+            try
             {
-                CheckSum = false;
+                byte[] bytes = File.ReadAllBytes(fileInfoDB.file_PatchToClient);
+                byte[] hash_byte = sha256_hash.ComputeHash(bytes);
+                string hash = BitConverter.ToString(hash_byte).Replace("-", string.Empty);
+
+                if (hash == fileInfoDB.file_CheckSum)
+                {
+                    CheckSum = true;
+                }
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+          
 
             return CheckSum;
             
