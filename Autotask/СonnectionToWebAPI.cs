@@ -49,6 +49,7 @@ namespace Autotask
                             Console.WriteLine($"     -{item2.version_Name}");
                         }
 
+
                     }
 
                     response2 = await client.GetAsync(Domain_app + Port_app + $"/api/Query/GetFileСollectionForProject/project_name=LauncherProject1,project_version_name=1.0.0");
