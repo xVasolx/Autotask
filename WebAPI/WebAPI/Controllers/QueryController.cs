@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
 			}
 			else
 				return NoContent();
-				
+
 		}
 		[HttpGet("GetProjectByName/name={name}")]
 		public ActionResult GetProjectByName(string name)
@@ -61,7 +61,7 @@ namespace WebAPI.Controllers
 		{
 			IQueryable<LauncherProject> launcherProjects = _context.LauncherProject;
 			List<LauncherProject> resultProjects = launcherProjects.Where(p =>
-					(p.Id >= firstIndex)&&(p.Id <= lastIndex)).ToList();
+					(p.Id >= firstIndex) && (p.Id <= lastIndex)).ToList();
 			if (resultProjects.Count() != 0)
 				return Ok(resultProjects.ToArray());
 			else
@@ -106,26 +106,34 @@ namespace WebAPI.Controllers
 				});
 
 			List<ProjectFile> searchProjectFiles = new List<ProjectFile>();
-			foreach (var vt in searchVersionToFiles.ToList())
+			try/////////////////////////Exeption
 			{
-				IQueryable<ProjectFile> projectFiles = _context.ProjectFile
-				.Where(f => f.Id.Equals(vt.ProjectFileId))
-				.Select(t => new ProjectFile
+				foreach (var vt in searchVersionToFiles.ToList())
 				{
-					Id = t.Id,
-					File_Name = t.File_Name,
-					File_Description = t.File_Description,
-					File_Extension = t.File_Extension,
-					File_PatchToClient = t.File_PatchToClient,
-					File_PhysicalPatch = t.File_PhysicalPatch,
-					File_CheckSum = t.File_CheckSum,
-					File_DateAdd = t.File_DateAdd,
-					File_Version = t.File_Version
-				});
+					IQueryable<ProjectFile> projectFiles = _context.ProjectFile
+					.Where(f => f.Id.Equals(vt.ProjectFileId))
+					.Select(t => new ProjectFile
+					{
+						Id = t.Id,
+						File_Name = t.File_Name,
+						File_Description = t.File_Description,
+						File_Extension = t.File_Extension,
+						File_PatchToClient = t.File_PatchToClient,
+						File_PhysicalPatch = t.File_PhysicalPatch,
+						File_CheckSum = t.File_CheckSum,
+						File_DateAdd = t.File_DateAdd,
+						File_Version = t.File_Version
+					});
 
 
-				searchProjectFiles.AddRange(projectFiles.ToList());
+					searchProjectFiles.AddRange(projectFiles.ToList());
+				}
 			}
+			catch
+			{
+
+			}
+
 			return searchProjectFiles;
 		}
 
@@ -133,10 +141,26 @@ namespace WebAPI.Controllers
 		public ActionResult GetFileForProject(string fileName, string fileVersion, string projectName, string projectVersionname)
 		{
 			List<ProjectFile> projects = GetFileListForProject(projectName, projectVersionname);
-			ProjectFile file = projects.Where(p => p.File_Name == fileName && p.File_Version == fileVersion).ToList()[0];
-			
+
+			ProjectFile file = null;
+			if (projects.Count() != 0)
+				file = projects.Where(p => p.File_Name == fileName && p.File_Version == fileVersion).ToList()[0];
+
 			if (file != null)
 				return Ok(file);
+			else
+				return NoContent();
+		}
+
+
+		[HttpGet("GetProjectVersions/pId={projectId}")]
+		public ActionResult GetProjectVersions(int projectId)
+		{
+			IQueryable<ProjectVersion> searchProjectVersion = _context.ProjectVersion
+				.Where(v => v.LauncherProjectId.Equals(projectId));
+
+			if(searchProjectVersion.ToList().Count() != 0)
+				return Ok(searchProjectVersion.ToList());
 			else
 				return NoContent();
 		}
@@ -147,6 +171,6 @@ namespace WebAPI.Controllers
 		{
 			return null;
 		}
-		
+
 	}
 }
