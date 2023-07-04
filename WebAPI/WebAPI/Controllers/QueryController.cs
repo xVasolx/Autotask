@@ -73,11 +73,23 @@ namespace WebAPI.Controllers
 		{
 			IQueryable<LauncherProject> launcherProjects = _context.LauncherProject;
 			List<LauncherProject> resultProjects = launcherProjects.ToList();
-			return Ok(resultProjects.ToArray());
+			if (resultProjects.Count != 0)
+				return Ok(resultProjects.ToArray());
+			else
+				return NoContent();
 		}
 
 		[HttpGet("GetFileСollectionForProject/project_name={pname},project_version_name={vname}")]
 		public ActionResult GetFileСollectionForProject(string pname, string vname)
+		{
+			List<ProjectFile> projectFiles = GetFileListForProject(pname, vname);
+			if (projectFiles.Count != 0)
+				return Ok(projectFiles.ToArray());
+			else
+				return NoContent();
+		}
+
+		private List<ProjectFile> GetFileListForProject(string pname, string vname)
 		{
 			IQueryable<LauncherProject> searchProject = _context.LauncherProject
 				.Where(p => p.Project_Name.Equals(pname));
@@ -111,14 +123,26 @@ namespace WebAPI.Controllers
 					File_Version = t.File_Version
 				});
 
-				
+
 				searchProjectFiles.AddRange(projectFiles.ToList());
 			}
-			return Ok(searchProjectFiles.ToArray());
+			return searchProjectFiles;
+		}
+
+		[HttpGet("GetFileForProject/fName={fileName},fVersion={fileVersion},pName={projectName},pvName={projectVersionname}")]
+		public ActionResult GetFileForProject(string fileName, string fileVersion, string projectName, string projectVersionname)
+		{
+			List<ProjectFile> projects = GetFileListForProject(projectName, projectVersionname);
+			ProjectFile file = projects.Where(p => p.File_Name == fileName && p.File_Version == fileVersion).ToList()[0];
+			
+			if (file != null)
+				return Ok(file);
+			else
+				return NoContent();
 		}
 
 
-		[HttpPost("LoadProject/")]//TODO
+		[HttpPost("LoadProject/")]//TODO?
 		public ActionResult LoadProject()
 		{
 			return null;
