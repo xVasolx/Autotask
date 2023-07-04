@@ -49,6 +49,7 @@
     <Compile Include="Cellulosity_Check_SHA256.cs" />
     <Compile Include="FileInfoDB.cs" />
     <Compile Include="FieldsJson.cs" />
+    <Compile Include="GetToken.cs" />
     <Compile Include="ParseJson.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
